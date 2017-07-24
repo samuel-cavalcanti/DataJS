@@ -1,97 +1,64 @@
-/* Código  feito por Dorgival
-	editado por Samuel
-*/
-
-
-//var x1 = document.getElementById("01");
-
+/* Código feito por Samuel e Dorgival */
 
 var csvFile;
 var teste = [];
 var table = [];
 var tables = [];
-var initialXNode;
-var initialYNode;
-var nodeSpacing;
-var nodeSize;
 var countFrame;
 var CsvName;
 
-var ready = { // i'm Ready, Promotion...
-  status: false,
-  toPrint: false,
-  countFrame:0,
-  setup: function() {
-    if (ready.status && !ready.toPrint) {
-
-      // calculando o tamanho do nodo em relação ao tamanho do canvas
-      dataSource.snapshotNumber =  tables.length;
-      dataSource.sizeSOM = Math.sqrt(tables[0].length -2);
-
-    //  console.log(tables.length);
-
-      nodeDrawSize = (width / dataSource.sizeSOM);
-      nodeSpacing = (nodeDrawSize * 20) / 100;
-      nodeSize = nodeDrawSize - nodeSpacing;
-
-      initialXNode = nodeDrawSize / 2;
-      initialYNode = nodeDrawSize / 2;
-
-      //count the columns
-      //  print(table.getRowCount() + " total rows in table");
-      //    print(table.getColumnCount() + " total columns in table");
-      ready.toPrint = true;
-    }
-  },
-
-  andPrinting: function() {
+var ready = {// i'm Ready, Promotion...
+    status: false,
+    toPrint: false,
+    countFrame: 0,
+    setup: function () {
 
 
-    if (ready.status && ready.toPrint) {
-      //console.log(ready.countFrame);
-      frameRate(20);
+        // calculando o tamanho do nodo em relação ao tamanho do canvas
+        dataSource.snapshotNumber = tables.length;
+        dataSource.sizeSOM = Math.sqrt(tables[0].length - 2);
+        dataSource.limitXposition = 5 + ((tables[0][0].length - 3) * 8);
+        //  console.log(tables.length); 
 
 
-      if (ready.countFrame >= dataSource.snapshotNumber){
-        done = " Visualization is over"
+
+
+        ready.toPrint = true;
+
+    },
+
+    andPrinting: function () {
+        //  print(ready.countFrame);
+        //console.log(ready.countFrame);
+        frameRate(20);
+        for (row = 1; row <= tables[ready.countFrame].length - 2; row++) {
+            //  console.log(ready.countFrame);
+            /////////////////////////////
+            // Draw a weights of node
+
+            //  console.log(table.length);
+            dataSource.pullWeightsNode(row, tables[ready.countFrame]);
+            /////////////////////////////
+
+        }
+        ready.countFrame += 1;
+
+    },
+    andEnded: function () {
+        ready.countFrame = 0;
+        status = false;
+        toPrint = false;
+        countFrame = 0;
+        done = " Visualization is over";
         textSize(32);
         fill(0, 102, 153);
-        text(done,50,530);
-
-        return;
-
-      }
-
-
-      for (row = 1; row <= tables[ready.countFrame].length - 2; row++) {
-      //  console.log(ready.countFrame);
-        /////////////////////////////
-        // Draw a weights of node
-
-        dataSource.drawWeightsNode(row, tables[ready.countFrame]);
-        /////////////////////////////
-
-      }
-      ready.countFrame += 1;
-
-
+        text(done, 50, 530);
+        tables = [];
+        dataSource.snapshotNumber = -1;
+        dataSource.sizeSOM = -1;
     }
 
-  }
-
 };
-
-
-const selectionData = 1;
-
-//Apenas adapta os valores das tabelas ao tamanho das c�lulas de visualiza��o no browser.
-function conversor(x) {
-  return x *= 5;
-}
-
-// Objeto para guardar configura��es sobre base de dados do bra�o
-// dados usados beta e gamma
-
 
 
 //  create the button
@@ -102,118 +69,171 @@ file.setAttribute("onchange", "handleFiles(this.files)");
 file.setAttribute("accept", ".csv");
 document.body.appendChild(file);
 
-
-
 //copy; Mounir Messelmeni 2012 https://github.com/MounirMesselmeni/html-fileapi.git
 
 function handleFiles(files) {
-  // Check for the various File API support.
+    // Check for the various File API support.
 
-  if (window.FileReader) {
-    csvFile = files;
-    //CsvName = files.split('0', 1);
-    // FileReader are supported.
-    for (i = 0; i < files.length; i++)
-      getAsText(files[i]);
-  } else {
-    alert('FileReader are not supported in this browser.');
-  }
+    if (window.FileReader) {
+        csvFile = files;
+        //CsvName = files.split('0', 1);
+        // FileReader are supported.
+        for (i = 0; i < files.length; i++)
+            getAsText(files[i]);
+    } else {
+        alert('FileReader are not supported in this browser.');
+    }
 }
 
 function getAsText(fileToRead) {
-  var reader = new FileReader();
-  // Handle errors load
-  reader.onload = loadHandler;
-  reader.onerror = errorHandler;
-  // Read file into memory as UTF-8
-  reader.readAsText(fileToRead);
+    var reader = new FileReader();
+    // Handle errors load
+    reader.onload = loadHandler;
+    reader.onerror = errorHandler;
+    // Read file into memory as UTF-8
+    reader.readAsText(fileToRead);
 }
 
 function loadHandler(event) {
-  var csv = event.target.result;
-  //teste = event;
-  processData(csv);
+    var csv = event.target.result;
+    //teste = event;
+    processData(csv);
 }
 
 function processData(csv) {
-  var allTextLines = csv.split(/\r\n|\n/);
-  //  testee = csv;
-  var lines = [];
-  while (allTextLines.length) {
-    lines.push(allTextLines.shift().split(','));
-  }
+    var allTextLines = csv.split(/\r\n|\n/);
+    //  testee = csv;
+    var lines = [];
+    while (allTextLines.length) {
+        lines.push(allTextLines.shift().split(','));
+    }
 
-  tables.push(lines);
+    tables.push(lines);
 
-  if(tables[csvFile.length -1])
-    ready.status =true;
+    if (tables[csvFile.length - 1])
+        ready.status = true;
 
 
 }
 
 function errorHandler(evt) {
-  if (evt.target.error.name == "NotReadableError") {
-    alert("Canno't read file !");
-  }
+    if (evt.target.error.name == "NotReadableError") {
+        alert("Canno't read file !");
+    }
 }
 
 
+const selectionData = 1;
+
+//Apenas adapta os valores das tabelas ao tamanho das c�lulas de visualiza��o no browser.
+function conversor(x) {
+    return x *= 5;
+}
+
+// Objeto para guardar configura��es sobre base de dados do bra�o
+// dados usados beta e gamma
 
 
 var dataSource = {
-  sizeSOM:-1,
-  snapshotNumber: -1,
-  dataName: -1,
-  drawWeightsNode: function(r, table) {
-  //  console.log("teste");
-    x = table[r][0];
-    //O valor real de x, sem convers�o, � usado para montar as posi��es de cada c�lula.
-    y = table[r][1];
-    //O valor real de y, sem convers�o, � usado para montar as posi��es de cada c�lula.
-    beta = table[r][2];
-    gamma = table[r][3];
-    rx = table[r][4];
-    ry = table[r][5];
-    beta = conversor(beta);
-    gamma = conversor(gamma);
-    rx = conversor(rx);
-    ry = conversor(ry);
-    xNode = nodeSpacing / 2 + x * (nodeSize + nodeSpacing);
-    yNode = nodeSpacing / 2 + y * (nodeSize + nodeSpacing);
+    sizeSOM: -1,
+    snapshotNumber: 1,
+    dataName: -1,
+    postionXWeight: 5,
+    postionYWeight: 32,
+    limitXposition: -1,
+    xNode: 4,
+    yNode: 4,
+    countNodeX: 0,
+    countNodeY: 0,
 
-    rect(xNode, yNode, nodeSize, nodeSize);
+    pullWeightsNode: function (r, table) {
+        //  console.log(table[0].length);
+        for (c = 2; c < table[0].length; c++) {
+            //   console.log(c);
+            weight = table[r][c];
+            x = table[r][0]; //O valor real de x, é usado para montar as posiõees de cada célula.
+            y = table[r][1]; //O valor real de y, é usado para montar as posições de cada célula.
 
-    fill(0, 0, 0);
-    ellipse(xNode + 5, yNode + 32 - beta, 3, 3); //beta
-    ellipse(xNode + 13, yNode + 32 - gamma, 3, 3); //gama
-    ellipse(xNode + 21, yNode + 32 - rx, 3, 3); // rx
-    ellipse(xNode + 29, yNode + 32 - ry, 3, 3); //ry
-    fill(255, 255, 255);
-  }
+            dataSource.drawWeightsNode(weight, c);
+        }
+        dataSource.countNodeX++;
+        dataSource.xNode += 44;
+        if (dataSource.countNodeX >= dataSource.sizeSOM) {
+            dataSource.xNode = 4;
+            dataSource.yNode += 44;
+            dataSource.countNodeX = 0;
+            dataSource.countNodeY++;
+            if (dataSource.countNodeY >= dataSource.sizeSOM) {
+                dataSource.countNodeY = 0;
+                dataSource.yNode = 4;
+
+            }
+
+        }
+
+
+    },
+
+    drawWeightsNode: function (weight, count2Rect) {
+        //  console.log("teste");
+
+        weight = conversor(weight);
+
+        // xNode = nodeSpacing / 2 + x * (nodeSize + nodeSpacing);
+        //  yNode = nodeSpacing / 2 + y * (nodeSize + nodeSpacing);
+
+        if (count2Rect == 2)
+            rect(dataSource.xNode, dataSource.yNode, 35, 35);
+
+
+
+        x = dataSource.xNode + dataSource.postionXWeight;
+        y = dataSource.yNode + dataSource.postionYWeight - weight;
+
+       // console.log("posWeightX: " + x + " posWeightY: " + y);
+
+        fill(0, 0, 0);
+        ellipse(dataSource.xNode + dataSource.postionXWeight, dataSource.yNode + dataSource.postionYWeight - weight, 3, 3);
+        fill(255, 255, 255);
+
+
+
+        if (dataSource.postionXWeight < dataSource.limitXposition)
+            dataSource.postionXWeight += 8;
+        else
+            dataSource.postionXWeight = 5;
+
+    }
 };
-
-
-
-
-
-
-
+a = 525;
+const Size = a;
 function setup() {
-  createCanvas(500, 550);
-  background(240);
-  countFrame = 0;
+    createCanvas(Size, Size);
+    background(240);
 
 
 
-
+}
+function createEllipse(rx, ry, tam, tam) {
 
 }
 
 function draw() {
 
-  ready.setup();
+    frameRate(30);
 
-  ready.andPrinting();
+    if (ready.status && !ready.toPrint)
+        ready.setup();
+
+    else if (ready.countFrame >= dataSource.snapshotNumber) {
+        //ready.andEnded();
+    }
+//    
+
+
+    else if (ready.status && ready.toPrint)
+        ready.andPrinting();
+
 
 
 
