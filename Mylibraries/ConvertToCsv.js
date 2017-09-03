@@ -37,10 +37,16 @@ function processData(csv) {
     while (allTextLines.length) {
         lines.push(allTextLines.shift().split(','));
     }
+    
+    if(ready.tables)
+        Network.nodes.push(lines);
+    else {
+        Network.nodes = [];
+        Network.nodes.push(lines);
+        ready.tables = true;
+    }
 
-    tables.push(lines);
-
-    if (tables[csvFile.length - 1])
+    if (Network.nodes[csvFile.length - 1])
         ready.status = true;
 
 

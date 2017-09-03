@@ -1,4 +1,6 @@
 
+var tables = [];
+
 function draw() {
 
     frameRate(30);
@@ -7,11 +9,9 @@ function draw() {
         ready.setup();
 
     else if (ready.countFrame >= dataSource.snapshotNumber) {
-        //ready.andEnded();
+        ready.andEnded();
     }
-//    
-
-
+    
     else if (ready.status && ready.toPrint)
         ready.andPrinting();
 
