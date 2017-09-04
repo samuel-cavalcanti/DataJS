@@ -9,14 +9,16 @@ file.setAttribute("onchange", "handleFiles(this.files)");
 file.setAttribute("accept", ".csv");
 document.body.appendChild(file);
 
+
+
 const selectionData = 1;
 
-//Apenas adapta os valores das tabelas ao tamanho das c�lulas de visualiza��o no browser.
+//Apenas adapta os valores das tabelas ao tamanho das células de visualização no browser.
 function conversor(x) {
     return x *= 10;
 }
 
-// Objeto para guardar configura��es sobre base de dados do bra�o
+// Objeto para guardar configuraçoes sobre base de dados do braço
 // dados usados beta e gamma
 
 
@@ -32,6 +34,7 @@ var dataSource = {
     countNodeX: 0,
     countNodeY: 0,
     sizeNode: 35,
+    node: [],
 
     pullWeightsNode: function (r, table) {
         //  console.log(table[0].length);
@@ -44,7 +47,7 @@ var dataSource = {
             dataSource.drawWeightsNode(weight, c);
         }
         dataSource.countNodeX++;
-        dataSource.xNode += 4 + dataSource.sizeNode ;
+        dataSource.xNode += 4 + dataSource.sizeNode;
         if (dataSource.countNodeX >= dataSource.sizeSOM) {
             dataSource.xNode = 4;
             dataSource.yNode += 4 + dataSource.sizeNode;
@@ -77,7 +80,7 @@ var dataSource = {
         x = dataSource.xNode + dataSource.postionXWeight;
         y = dataSource.yNode + dataSource.postionYWeight - weight;
 
-       // console.log("posWeightX: " + x + " posWeightY: " + y);
+        // console.log("posWeightX: " + x + " posWeightY: " + y);
 
         fill(0, 0, 0);
         ellipse(dataSource.xNode + dataSource.postionXWeight, dataSource.yNode + dataSource.postionYWeight - weight, 3, 3);
@@ -91,4 +94,5 @@ var dataSource = {
             dataSource.postionXWeight = 5;
 
     }
+
 };

@@ -37,8 +37,8 @@ function processData(csv) {
     while (allTextLines.length) {
         lines.push(allTextLines.shift().split(','));
     }
-    
-    if(ready.tables)
+
+    if (ready.tables)
         tables.push(lines);
     else {
         tables = [];

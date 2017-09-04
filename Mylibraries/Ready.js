@@ -4,7 +4,7 @@ var ready = {// i'm Ready, Promotion...
     toPrint: false,
     tables: true,
     countFrame: 0,
-    TamCanvas:500,
+    TamCanvas: 500,
     setup: function () {
 
 
@@ -12,14 +12,11 @@ var ready = {// i'm Ready, Promotion...
         dataSource.snapshotNumber = tables.length;
         dataSource.sizeSOM = Math.sqrt(tables[0].length - 2);
         dataSource.limitXposition = 5 + ((tables[0][0].length - 3) * 8);
-        dataSource.sizeNode =  (25/3)*tables[0][0].length -15; 
-        ready.TamCanvas = 4*(dataSource.sizeSOM+1) + (dataSource.sizeSOM* dataSource.sizeNode) ;
+        dataSource.sizeNode = (25 / 3) * tables[0][0].length - 15;
+        ready.TamCanvas = 4 * (dataSource.sizeSOM + 1) + (dataSource.sizeSOM * dataSource.sizeNode);
         const Size = ready.TamCanvas;
-         createCanvas(Size, Size);
-        //  console.log(tables.length); 
-
-
-
+        createCanvas(Size, Size);
+        //  console.log(tables.length);
 
         ready.toPrint = true;
 
@@ -33,7 +30,6 @@ var ready = {// i'm Ready, Promotion...
             //  console.log(ready.countFrame);
             /////////////////////////////
             // Draw a weights of node
-
             //  console.log(table.length);
             dataSource.pullWeightsNode(row, tables[ready.countFrame]);
             /////////////////////////////
@@ -49,7 +45,7 @@ var ready = {// i'm Ready, Promotion...
         ready.tables = false;
         ready.countFrame = 0;
         dataSource.snapshotNumber = 1;
-        dataSource.sizeSOM = -1;
+    
     }
 
 };
