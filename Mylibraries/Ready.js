@@ -9,10 +9,10 @@ var ready = {// i'm Ready, Promotion...
 
 
         // calculando o tamanho do nodo em relação ao tamanho do canvas
-        dataSource.snapshotNumber = Network.nodes.length;
-        dataSource.sizeSOM = Math.sqrt(Network.nodes[0].length - 2);
-        dataSource.limitXposition = 5 + ((Network.nodes[0][0].length - 3) * 8);
-        dataSource.sizeNode =  (25/3)*Network.nodes[0][0].length -15; 
+        dataSource.snapshotNumber = tables.length;
+        dataSource.sizeSOM = Math.sqrt(tables[0].length - 2);
+        dataSource.limitXposition = 5 + ((tables[0][0].length - 3) * 8);
+        dataSource.sizeNode =  (25/3)*tables[0][0].length -15; 
         ready.TamCanvas = 4*(dataSource.sizeSOM+1) + (dataSource.sizeSOM* dataSource.sizeNode) ;
         const Size = ready.TamCanvas;
          createCanvas(Size, Size);
@@ -29,13 +29,13 @@ var ready = {// i'm Ready, Promotion...
         //  print(ready.countFrame);
         //console.log(ready.countFrame);
         frameRate(20);
-        for (row = 1; row <= Network.nodes[ready.countFrame].length - 2; row++) {
+        for (row = 1; row <= tables[ready.countFrame].length - 2; row++) {
             //  console.log(ready.countFrame);
             /////////////////////////////
             // Draw a weights of node
 
             //  console.log(table.length);
-            dataSource.pullWeightsNode(row, Network.nodes[ready.countFrame]);
+            dataSource.pullWeightsNode(row, tables[ready.countFrame]);
             /////////////////////////////
 
         }

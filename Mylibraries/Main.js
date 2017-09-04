@@ -1,5 +1,4 @@
-
-var tables = [];
+var tables =  [];
 
 function draw() {
 

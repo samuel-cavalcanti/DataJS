@@ -39,14 +39,14 @@ function processData(csv) {
     }
     
     if(ready.tables)
-        Network.nodes.push(lines);
+        tables.push(lines);
     else {
-        Network.nodes = [];
-        Network.nodes.push(lines);
+        tables = [];
+        tables.push(lines);
         ready.tables = true;
     }
 
-    if (Network.nodes[csvFile.length - 1])
+    if (tables[csvFile.length - 1])
         ready.status = true;
 
 
