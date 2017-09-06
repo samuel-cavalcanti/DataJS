@@ -1,4 +1,6 @@
 var csvFile;
+var tables = [];
+
 //copy; Mounir Messelmeni 2012 https://github.com/MounirMesselmeni/html-fileapi.git
 
 function handleFiles(files) {
@@ -57,4 +59,3 @@ function errorHandler(evt) {
         alert("Canno't read file !");
     }
 }
-
