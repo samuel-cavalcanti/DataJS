@@ -1,0 +1,45 @@
+<html>
+
+<head>
+
+  <meta charset="UTF-8">
+
+
+  <!-- PLEASE NO CHANGES BELOW THIS LINE (UNTIL I SAY SO) -->
+  <script language="javascript" type="text/javascript" src="libraries/p5.js"></script>
+  <script src="node_modules/three/build/three.js"></script>
+  <script src="node_modules/three/build/three.min.js"></script>
+  <script src="node_modules/three/examples/js/controls/TrackballControls.js"></script>
+  <script src="node_modules/three/examples/js/libs/stats.min.js"></script>
+
+
+
+  <!--0 OK, YOU CAN MAKE CHANGES BELOW THIS LINE AGAIN -->
+  <!-- This line removes any default padding and style.
+       You might only need one of these values set. -->
+
+  <style>
+    body {
+      padding: 0;
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+
+
+  <!--input  name="arquivos[]" type=file multiple /-->
+  <script language="javascript" type="text/javascript" src="Mylibraries/SOM.js"></script>
+  <script language="javascript" type="text/javascript" src="Mylibraries/Data.js"></script>
+  <script language="javascript" type="text/javascript" src="Mylibraries/Ready.js"></script>
+  <script language="javascript" type="text/javascript" src="Mylibraries/ConvertToCsv.js"></script>
+  <script language="javascript" type="text/javascript" src="Mylibraries/Main.js"></script>
+
+
+
+
+
+</body>
+
+</html>
