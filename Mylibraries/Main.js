@@ -1,4 +1,4 @@
-/*
+
 function setup (){
 
    createCanvas(500, 500, WEBGL);
@@ -6,9 +6,9 @@ function setup (){
 
 
 function draw() {
-/*
+
   frameRate(30);
-/*
+
   if (ready.status && !ready.toPrint)
     ready.setup();
 
@@ -21,19 +21,10 @@ function draw() {
 
 
   }
-
-background(200);
-
- rotateX(frameCount * 0.01);
- box(200, 200, 100, 200, 200);
-
-
-
-
 }
 
-*/
 
+/*
 var container, stats;
 			var camera, controls, scene, renderer;
 			var pickingData = [], pickingTexture, pickingScene;
@@ -62,7 +53,7 @@ var container, stats;
 				pickingTexture.texture.minFilter = THREE.LinearFilter;
 				scene.add( new THREE.AmbientLight( 0x555555 ) );
 				var light = new THREE.SpotLight( 0xffffff, 1.5 );
-				light.position.set( 0, 500, 2000 );
+				light.position.set( 0, 1000, 2000 );
 				scene.add( light );
 				var geometry = new THREE.Geometry(),
 				pickingGeometry = new THREE.Geometry(),
@@ -160,3 +151,5 @@ var container, stats;
 				pick();
 				renderer.render( scene, camera );
 			}
+
+			*/
