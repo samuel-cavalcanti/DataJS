@@ -31,36 +31,51 @@ var Som = {
   epoch: 0,
   sigma: 1.5,
   alpha: 0.2, // duvida
-  sampleI:0, // caracteristica do dataSet
-  currentSample:"error",
+  sampleI: 0, // caracteristica do dataSet
+  currentSample: "error",
   sizeNetwork: -1,
 
 
-/* Som.start , é uma função utilizada para peseudo inicializar a SOM
-*  e utilizar o metodo findBest
-*/
+
+  /* Som.start , é uma função utilizada para peseudo inicializar a SOM
+   *  e utilizar o metodo findBest
+   */
   start: function() { // ignorar, por enquanto
-    rowsOfTable = 1; // 1 linha é o header do csv
-    Som.sizeNetwork = dataSource.sizeSOM;
-    for (i = 0; i < Som.sizeNetwork; i++) {
-      Som.node[i] = [];
+    /*  rowsOfTable = 1; // 1 linha é o header do csv
+      Som.sizeNetwork = dataSource.sizeSOM;
+      for (i = 0; i < Som.sizeNetwork; i++) {
+        Som.node[i] = [];
 
-      for (j = 0; j < Som.sizeNetwork; j++) {
-        Som.node[i][j] = new Node();
+        for (j = 0; j < Som.sizeNetwork; j++) {
+          Som.node[i][j] = new Node();
 
-        for (k = 2; k < tables[tables.length - 1][rowsOfTable].length; k++) {
-          Som.node[i][j].information.push(tables[tables.length - 1][rowsOfTable][k])
+          for (k = 2; k < tables[tables.length - 1][rowsOfTable].length; k++) {
+            Som.node[i][j].information.push(tables[tables.length - 1][rowsOfTable][k])
+          }
+
+          rowsOfTable++;
         }
-
-        rowsOfTable++;
       }
-    }
-    /* está localizada no Data.js, ela cria o botão
-      para o usuario digitar a Sample, pos inicial
-      e final do vetor, igual a findBest em C++
+      /* está localizada no Data.js, ela cria o botão
+        para o usuario digitar a Sample, pos inicial
+        e final do vetor, igual a findBest em C++
 
-    */
-    showFindBest();
+
+      showFindBest();
+      */
+
+    Som.sizeNetwork = 12;
+
+    var i = 0;
+    var iterations = 10000;
+
+    Som.initializeNodes(tables[0][0].length, true, 0.01);
+
+    while (i < iterations) {
+      Som.executeOneIt();
+      i++;
+    }
+
   },
 
   print: function() { //emprime todos os neuronios da rede
@@ -69,7 +84,7 @@ var Som = {
         console.log("node[" + i + "][" + j + "]: " + Som.node[i][j].information);
 
   },
-// Som::findBest, igual ao C++, mas sem a verificação se o neuronio está habilitado
+  // Som::findBest, igual ao C++, mas sem a verificação se o neuronio está habilitado
   findBest: function(sample, initPos, finalPos) {
     winner = [0, 0];
     // add kWin
@@ -91,19 +106,19 @@ var Som = {
 
 
   },
-// igua ao C++
-  findWinner: function(sample, Winner) {
-    winner = [0, 0];
+  // igua ao C++
+  findWinner: function(sample, WinX, winY) {
+
     bestD = Som.node[0][0].distance(sample);
-                              //o tamanho da rede Som
+    //o tamanho da rede Som
     for (nodesI = 0; nodesI < Som.sizeNetwork; nodesI++)
       for (nodesJ = 0; nodesJ < Som.sizeNetwork; nodesJ++) {
         if (Som.node[nodesI][nodesJ].enable) {
           d = Som.node[nodesI][nodesJ].distance(sample);
           if (d < bestD) {
             bestD = d;
-            winner[0] = nodesI;
-            winner[1] = nodesJ;
+            WinX = nodesI;
+            winY = nodesJ;
           }
         }
       }
@@ -114,9 +129,12 @@ var Som = {
     maxIntensity = 10000;
     intensity = maxIntensity * intensity;
 
-    for (nodesI = 0; nodesI < Som.sizeNetwork; nodesI++)
+    for (nodesI = 0; nodesI < Som.sizeNetwork; nodesI++) {
+      Som.node[nodesI] = [];
       for (nodesJ = 0; nodesJ < Som.sizeNetwork; nodesJ++) {
         info = [];
+        Som.node[nodesI][nodesJ] = new Node();
+
         for (l = 0; l < sizeNode; l++) {
           if (positivesValues)
             a = (Math.random() % parseInt(intensity)) / maxIntensity;
@@ -125,15 +143,17 @@ var Som = {
 
           info.push(a);
         }
+
         Som.node[nodesI][nodesJ].information = info;
       }
-
+    }
   },
 
   enableNodes: function() {
     for (nodesI = 0; nodesI < Som.sizeNetwork; nodesI++)
       for (nodesJ = 0; nodesJ < Som.sizeNetwork; nodesJ++) {
         Som.node[nodesI][nodesJ].setEnabled(true);
+
       }
   },
 
@@ -148,11 +168,13 @@ var Som = {
     return Math.sqrt(Math.pow(aX - bX, 2) + Math.pow(aY - bY, 2));
   },
 
-  updateWeight: function(Sample, winner) {
-    jAnt = Som.validatePos(winner[1] - sizeNetwork / 3);
-    jPost = Som.validatePos(winner[1] + sizeNetwork / 3);
-    iAnt = Som.validatePos(winner[0] - sizeNetwork / 3);
-    iPost = Som.validatePos(winner[0] + sizeNetwork / 3);
+  updateWeight: function(Sample, winX, WinY) {
+
+
+    jAnt = Som.validatePos(WinY - Som.sizeNetwork / 3);
+    jPost = Som.validatePos(WinY + Som.sizeNetwork / 3);
+    iAnt = Som.validatePos(winX - Som.sizeNetwork / 3);
+    iPost = Som.validatePos(winX + Som.sizeNetwork / 3);
 
     for (i = iAnt; i <= iPost; i++)
       for (j = jAnt; j <= jPost; j++) {
@@ -160,17 +182,27 @@ var Som = {
         neighboorFunction = Som.alpha * Math.exp(-(Som.distancePos(i, j, winner[0], winner[1]) / (Som.sigma * Som.sigma)));
         Som.node[i][j].updateFeatures(neighboorFunction, sample);
       }
-    Som.node[winner[0]][winner[1]].setEnabled(false);
+    Som.node[winX][WinY].setEnabled(false);
     Som.contDisabled++;
 
   },
 
-  getRandomSample: function (sample){
-    sample = adefinir
-    if(Som.sampleI == 0)
-        return true;
-    else
-        return false;
+  getRandomSample: function(sample) {
+    if (Som.sampleI == tables[0].length - 2) { // não existe nada alem de no lenght -2
+      Som.sampleI = 0;
+    }
+
+    sample = tables[0][Som.sampleI + 1]; // tables[0][0] csvHeader
+
+
+    if (Som.sampleI == 0) {
+      Som.sampleI++;
+      return true;
+    } else {
+      Som.sampleI++;
+      return false;
+    }
+
 
   },
 
@@ -178,30 +210,33 @@ var Som = {
     if (Som.contDisabled >= Som.sizeNetwork * Som.sizeNetwork)
       Som.enableNodes();
 
-      firstSample = Som.getRandomSample(Som.currentSample);
+    firstSample = Som.getRandomSample();
 
-      if(firstSample){
-        Som.epoch++;
-       //enable all nodes of the network
-       Som.enableNodes();
-       // update all rates
-       // update learning rate
-       Som.alpha = Som.learningRate * ((Som.maxEpoch - Som.epoch) / (Som.maxEpoch));
-       if (Som.alpha < Som.minLearningRate)
-           Som.alpha = Som.minLearningRate;
-       //update the gain G (sigma)
-       Som.sigma = (1 - 0.01) * Som.sigma;
-      }
+    //  console.log(firstSample);
 
-    winner = [];
-    Som.findWinner(Som.currentSample, winner[0], winner[1]);
+    if (firstSample) {
+      Som.epoch++;
+      //enable all nodes of the network
+      Som.enableNodes();
+      // update all rates
+      // update learning rate
+      Som.alpha = Som.learningRate * ((Som.maxEpoch - Som.epoch) / (Som.maxEpoch));
+      if (Som.alpha < Som.minLearningRate)
+        Som.alpha = Som.minLearningRate;
+      //update the gain G (sigma)
+      Som.sigma = (1 - 0.01) * Som.sigma;
+    }
+
+     var winX;
+     var WinY;
+    Som.findWinner(Som.currentSample, winX, WinY);
 
     // atualiza os pesos
-    Som.updateWeight(Som.currentSample, winner[0], winner[1]);
-  /*
-    if ((Som.currentIt % 100000 == 0) && (Som.debug))
-        Som.print();
-  */
+    Som.updateWeight(Som.currentSample, winX, WinY);
+
+      if ((Som.currentIt % 100000 == 0) && (Som.debug))
+          Som.print();
+
 
     Som.currentIt++;
 
@@ -241,6 +276,16 @@ function Node() {
 
   };
 
+  this.norm = function(){
+    var sum = 0;
+    for(i = 0; i<this.information.length; i++){
+      sum += (this.information[i])*(this.information[i]);
+      
+    }
+    return sqrt(sum);
+  }
+
+  
 
 
 }
